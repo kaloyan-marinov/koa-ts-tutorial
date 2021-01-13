@@ -44,7 +44,7 @@ describe("storage/redis", () => {
     });
   });
 
-  describe("add", () => {
+  xdescribe("add", () => {
     const list_name = "add_test_list";
 
     it("should allow adding an item to a list", async () => {
@@ -53,10 +53,24 @@ describe("storage/redis", () => {
       expect(await redisStorage.get(list_name)).toEqual(["chris"]);
     });
   });
-  xdescribe("remove", () => {
-    /*
-    The 'x' before 'describe' prevents this test from being run.
-    This is needed for the time being.
-    */
+
+  describe("remove", () => {
+    const list_name = "remove_test_list";
+
+    it("should allow removing an item from a list", async () => {
+      const name1 = "chris";
+      const name2 = "paul";
+
+      await redisStorage.add(list_name, name1);
+      await redisStorage.add(list_name, name2);
+
+      expect(await redisStorage.get(list_name)).toEqual([name1, name2]);
+
+      expect(await redisStorage.remove(list_name, name1)).toBeTruthy();
+
+      expect(await redisStorage.get(list_name)).toEqual([name2]);
+
+      await redisStorage.remove(list_name, name2);
+    });
   });
 });
