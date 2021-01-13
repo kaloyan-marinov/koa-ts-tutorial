@@ -44,10 +44,7 @@ afterEach(done => {
 });
 
 describe("routes/codereviewvideos", () => {
-  const games = [
-    "World of Warships"
-    // "Battlefield"
-  ];
+  const games = ["World of Warships", "Battlefield"];
 
   games.forEach((game: string) => {
     it(`should allow adding a game to the list - ${game}`, async () => {
