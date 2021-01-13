@@ -57,7 +57,17 @@ describe("routes/codereviewvideos", () => {
     expect(response.type).toEqual("application/json");
     expect(response.body).toEqual({
       status: "error",
-      data: [{ a: "b" }]
+      data: [
+        {
+          target: { name: "" },
+          value: "",
+          property: "name",
+          children: [],
+          constraints: {
+            length: "name must be longer than or equal to 1 characters"
+          }
+        }
+      ]
     });
   });
 });
