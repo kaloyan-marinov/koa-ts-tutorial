@@ -35,7 +35,10 @@ router.post("/codereviewvideos", async (ctx: Context) => {
 
     ctx.status = 201;
     ctx.body = {
-      games: [ctx.request.body.name]
+      games: [
+        // ctx.request.body.name
+        storage.redisStorage().get("my_game_list")
+      ]
     };
   } catch (e) {
     console.error(e);

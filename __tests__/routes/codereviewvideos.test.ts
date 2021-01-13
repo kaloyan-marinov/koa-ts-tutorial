@@ -51,6 +51,16 @@ describe("routes/codereviewvideos", () => {
 
   games.forEach((game: string) => {
     it(`should allow adding a game to the list - ${game}`, async () => {
+      const mockGet = jest.fn((list: string) => Promise.resolve([game]));
+
+      storage.redisStorage = jest.fn(() => {
+        return {
+          get: mockGet,
+          add: (list: string) => Promise.resolve(false),
+          remove: (list: string) => Promise.resolve(false)
+        };
+      });
+
       const response = await request(server)
         .post("/codereviewvideos")
         .send({ name: game });
