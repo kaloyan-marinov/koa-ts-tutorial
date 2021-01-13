@@ -174,7 +174,7 @@ describe("routes/codereviewvideos", () => {
       expect(mockAdd).not.toHaveBeenCalled();
     });
 
-    it.only("returns an updated list when deleting a game", async () => {
+    it("returns an updated list when deleting a game", async () => {
       const game = "Overwatch";
 
       const list_of_games: string[] = ["GTA 5", game, "Diablo 3"];
