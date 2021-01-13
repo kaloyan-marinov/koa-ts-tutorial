@@ -26,7 +26,17 @@ it doesn't really matter that we're in a test...
 and this is something we can't have if we're going to mock this.
 )
 */
-console.log("storage", storage);
+// console.log("[before jest.mock] storage ---", storage);
+
+/*
+[If the previous instruction are replaced with the next block,]
+two interesting things happen:
+
+1. we get a mock instead of the actual implementation
+2. [our system still tries] to connect to Redis
+*/
+jest.mock("../../src/storage/redis");
+console.log("[after jest.mock] storage ---", storage);
 
 afterEach(done => {
   server.close();
