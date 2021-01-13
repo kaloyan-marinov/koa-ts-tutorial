@@ -2,6 +2,7 @@ import { Context } from "koa";
 import Router from "koa-router";
 import { AddGameRequest } from "../request/AddGameRequest";
 import { validate } from "class-validator";
+import * as storage from "../storage/redis";
 
 const router = new Router();
 
@@ -25,6 +26,8 @@ router.post("/codereviewvideos", async (ctx: Context) => {
 
       return ctx;
     }
+
+    console.log("route storage ---", storage);
 
     // save the new game to storage
 
