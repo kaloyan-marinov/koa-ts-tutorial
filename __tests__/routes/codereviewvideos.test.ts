@@ -135,7 +135,7 @@ describe("routes/codereviewvideos", () => {
   });
 
   describe("delete", () => {
-    it("returns an empty list when the list is empy", async () => {
+    it.only("returns an empty list when the list is empy", async () => {
       const game = "Overwatch";
 
       const list_of_games: string[] = [game];
@@ -163,10 +163,10 @@ describe("routes/codereviewvideos", () => {
         .delete("/codereviewvideos")
         .send({ name: game });
 
-      expect(response.status).toEqual(204);
+      expect(response.status).toEqual(200);
       expect(response.type).toEqual("application/json");
       expect(response.body).toEqual({
-        games: [game]
+        games: []
       });
 
       expect(mockGet).toHaveBeenCalled();
