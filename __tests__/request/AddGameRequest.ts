@@ -49,6 +49,7 @@ describe("request/AddGameRequest", () => {
 
   it("must have a length of 20 characters of fewer", async () => {
     addGameRequest.name = "y".repeat(21);
+    /* console.log("outcome", await validate(addGameRequest, validatorOptions)); */
     expect(await validate(addGameRequest, validatorOptions)).toHaveLength(1);
   });
 });

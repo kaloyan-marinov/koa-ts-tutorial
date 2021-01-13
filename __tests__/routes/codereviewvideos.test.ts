@@ -47,4 +47,17 @@ describe("routes/codereviewvideos", () => {
       games: [data1.game, data2.game]
     });
   });
+
+  it.only("should return a validation failure if the game data is incorrect", async () => {
+    const response = await request(server)
+      .post("/codereviewvideos")
+      .send({ game: "" });
+
+    expect(response.status).toEqual(400);
+    expect(response.type).toEqual("application/json");
+    expect(response.body).toEqual({
+      status: "error",
+      data: [{ a: "b" }]
+    });
+  });
 });
