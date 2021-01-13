@@ -77,3 +77,40 @@ const mySimpleTopLevelMiddlewareFunction = () => {
 
 mySimpleTopLevelMiddlewareFunction();
 ```
+
+# added after tag `video-9-addendum`
+
+In order to help (or even be able to) re-run the tests, you may have to take the following step:
+
+1. in one terminal, issue `$ docker-compose up`
+2. in another terminal, issue:
+
+```
+~ $ docker ps -a
+CONTAINER ID   IMAGE         COMMAND                  CREATED       STATUS         PORTS                    NAMES
+370e5fcb3d91   redis:5.0.5   "docker-entrypoint.s…"   4 hours ago   Up 8 seconds   0.0.0.0:6401->6379/tcp   koa-ts-tutorial_redis_1
+~ $ docker-compose exec redis /bin/sh
+ERROR:
+        Can't find a suitable configuration file in this directory or any
+        parent. Are you in the right directory?
+
+        Supported filenames: docker-compose.yml, docker-compose.yaml
+
+.
+.
+.
+
+koa-ts-tutorial $ docker-compose exec redis /bin/sh
+# redis-cli
+127.0.0.1:6379> keys *
+1) "my_test_list"
+2) "add_test_list"
+3) "remove_test_list"
+
+# You _may_ have to issue the following commands _more than once_:
+
+127.0.0.1:6379> FLUSHALL
+OK
+127.0.0.1:6379> keys *
+(empty list or set)
+```
