@@ -15,7 +15,7 @@ export interface IStorage {
 
   The truth is this is a trial-and-error process that requires quite a lot of thought.
   */
-  get: (list_name: string) => string[];
-  add: (list_name: string, item: string) => boolean;
-  remove: (list_name: string, item: string) => boolean;
+  get: (list_name: string) => Promise<string[]>;
+  add: (list_name: string, item: string) => Promise<boolean>;
+  remove: (list_name: string, item: string) => Promise<boolean>;
 }
