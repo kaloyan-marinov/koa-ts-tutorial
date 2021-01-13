@@ -70,7 +70,22 @@ describe("routes/codereviewvideos", () => {
     });
   });
 
-  xit("should keep track of all games added to the list", async () => {
+  it("should keep track of all games added to the list", async () => {
+    const list_of_games: string[] = [];
+    const mockGet = jest.fn((list: string) => Promise.resolve(list_of_games));
+    const mockAdd = jest.fn((list: string, name: string) => {
+      list_of_games.push(name);
+      return list_of_games.length > 0;
+    });
+
+    storage.redisStorage = jest.fn(() => {
+      return {
+        get: mockGet,
+        add: mockAdd,
+        remove: (list: string) => Promise.resolve(false)
+      };
+    });
+
     const data1 = { name: "Half Life 3" };
     const response1 = await request(server)
       .post("/codereviewvideos")
