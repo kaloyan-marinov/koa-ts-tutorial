@@ -1,10 +1,14 @@
 import { AddGameRequest } from "../../src/request/AddGameRequest";
 
 describe("request/AddGameRequest", () => {
-  it("has the expected class properties", async () => {
-    const addGameRequest = new AddGameRequest();
-    addGameRequest.name = "a game name here";
+  let addGameRequest: AddGameRequest;
 
+  beforeAll(() => {
+    addGameRequest = new AddGameRequest();
+  });
+
+  it("has the expected class properties", async () => {
+    addGameRequest.name = "a game name here";
     expect(addGameRequest.name).toBeDefined();
   });
 });
