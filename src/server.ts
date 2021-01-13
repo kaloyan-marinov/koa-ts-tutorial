@@ -2,6 +2,7 @@ import Koa from "koa";
 import bodyParser from "koa-bodyparser";
 import cors from "koa2-cors";
 import logger from "koa-logger";
+import healthcheckRoutes from "./routes/healthcheck";
 
 const app = new Koa();
 
@@ -15,24 +16,7 @@ app.use(
 );
 app.use(logger());
 
-/*
-Configure a router,
-and associate with it a route that one will be able to send a GET request to.
-*/
-import Router from "koa-router";
-const router = new Router();
-
-router.get("/", async ctx => {
-  try {
-    ctx.body = {
-      status: "success"
-    };
-  } catch (e) {
-    console.error(e);
-  }
-});
-
-app.use(router.routes());
+app.use(healthcheckRoutes.routes());
 
 const server = app
   .listen(PORT, async () => {
