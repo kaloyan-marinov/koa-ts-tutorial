@@ -46,89 +46,132 @@ afterEach(done => {
 describe("routes/codereviewvideos", () => {
   const games = ["World of Warships", "Battlefield"];
 
-  games.forEach((game: string) => {
-    it(`should allow adding a game to the list - ${game}`, async () => {
-      const mockGet = jest.fn((list: string) => Promise.resolve([game]));
+  describe("post", () => {
+    games.forEach((game: string) => {
+      it(`should allow adding a game to the list - ${game}`, async () => {
+        const mockGet = jest.fn((list: string) => Promise.resolve([game]));
+
+        storage.redisStorage = jest.fn(() => {
+          return {
+            get: mockGet,
+            add: (list: string) => Promise.resolve(false),
+            remove: (list: string) => Promise.resolve(false)
+          };
+        });
+
+        const response = await request(server)
+          .post("/codereviewvideos")
+          .send({ name: game });
+
+        expect(response.status).toEqual(201);
+        expect(response.type).toEqual("application/json");
+        expect(response.body).toEqual({
+          games: [game]
+        });
+      });
+    });
+
+    it("should keep track of all games added to the list", async () => {
+      const list_of_games: string[] = [];
+      const mockGet = jest.fn((list: string) => Promise.resolve(list_of_games));
+      const mockAdd = jest.fn((list: string, name: string) => {
+        list_of_games.push(name);
+        return list_of_games.length > 0;
+      });
 
       storage.redisStorage = jest.fn(() => {
         return {
           get: mockGet,
-          add: (list: string) => Promise.resolve(false),
+          add: mockAdd,
           remove: (list: string) => Promise.resolve(false)
         };
       });
 
+      const data1 = { name: "Half Life 3" };
+      const response1 = await request(server)
+        .post("/codereviewvideos")
+        .send(data1);
+
+      expect(response1.status).toEqual(201);
+      expect(response1.type).toEqual("application/json");
+      expect(response1.body).toEqual({
+        games: [data1.name]
+      });
+
+      const data2 = { name: "Grand Theft Auto" };
+      const response2 = await request(server)
+        .post("/codereviewvideos")
+        .send(data2);
+
+      expect(response2.status).toEqual(201);
+      expect(response2.type).toEqual("application/json");
+      expect(response2.body).toEqual({
+        games: [data1.name, data2.name]
+      });
+    });
+
+    it("should return a validation failure if the game data is incorrect", async () => {
       const response = await request(server)
         .post("/codereviewvideos")
-        .send({ name: game });
+        .send({ name: "" });
 
-      expect(response.status).toEqual(201);
+      expect(response.status).toEqual(400);
       expect(response.type).toEqual("application/json");
       expect(response.body).toEqual({
-        games: [game]
+        status: "error",
+        data: [
+          {
+            target: { name: "" },
+            value: "",
+            property: "name",
+            children: [],
+            constraints: {
+              length: "name must be longer than or equal to 1 characters"
+            }
+          }
+        ]
       });
     });
   });
 
-  it("should keep track of all games added to the list", async () => {
-    const list_of_games: string[] = [];
-    const mockGet = jest.fn((list: string) => Promise.resolve(list_of_games));
-    const mockAdd = jest.fn((list: string, name: string) => {
-      list_of_games.push(name);
-      return list_of_games.length > 0;
-    });
+  describe("delete", () => {
+    it("returns an empty list when the list is empy", async () => {
+      const game = "Overwatch";
 
-    storage.redisStorage = jest.fn(() => {
-      return {
-        get: mockGet,
-        add: mockAdd,
-        remove: (list: string) => Promise.resolve(false)
-      };
-    });
+      const list_of_games: string[] = [game];
 
-    const data1 = { name: "Half Life 3" };
-    const response1 = await request(server)
-      .post("/codereviewvideos")
-      .send(data1);
-
-    expect(response1.status).toEqual(201);
-    expect(response1.type).toEqual("application/json");
-    expect(response1.body).toEqual({
-      games: [data1.name]
-    });
-
-    const data2 = { name: "Grand Theft Auto" };
-    const response2 = await request(server)
-      .post("/codereviewvideos")
-      .send(data2);
-
-    expect(response2.status).toEqual(201);
-    expect(response2.type).toEqual("application/json");
-    expect(response2.body).toEqual({
-      games: [data1.name, data2.name]
-    });
-  });
-
-  it("should return a validation failure if the game data is incorrect", async () => {
-    const response = await request(server)
-      .post("/codereviewvideos")
-      .send({ name: "" });
-
-    expect(response.status).toEqual(400);
-    expect(response.type).toEqual("application/json");
-    expect(response.body).toEqual({
-      status: "error",
-      data: [
-        {
-          target: { name: "" },
-          value: "",
-          property: "name",
-          children: [],
-          constraints: {
-            length: "name must be longer than or equal to 1 characters"
-          }
+      const mockGet = jest.fn((list: string) => Promise.resolve(list_of_games));
+      const mockAdd = jest.fn();
+      const mockRemove = jest.fn((list: string, game: string) => {
+        const index = list_of_games.indexOf(game);
+        if (index === -1) {
+          return false;
         }
-      ]
+        list_of_games.splice(index, 1);
+        return true;
+      });
+
+      storage.redisStorage = jest.fn(() => {
+        return {
+          get: mockGet,
+          add: mockAdd,
+          remove: mockRemove
+        };
+      });
+
+      const response = await request(server)
+        .delete("/codereviewvideos")
+        .send({ name: game });
+
+      expect(response.status).toEqual(204);
+      expect(response.type).toEqual("application/json");
+      expect(response.body).toEqual({
+        games: [game]
+      });
+
+      expect(mockGet).toHaveBeenCalled();
+      expect(mockRemove).toHaveBeenCalled();
+      expect(mockAdd).not.toHaveBeenCalled();
     });
   });
 });
