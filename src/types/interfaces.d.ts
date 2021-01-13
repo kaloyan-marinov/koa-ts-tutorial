@@ -1,5 +1,9 @@
 export interface IConfig {
   port: string;
+  redis: {
+    host: string;
+    port: number;
+  };
 }
 
 export interface IStorage {
