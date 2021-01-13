@@ -43,3 +43,37 @@ Use the Jest functionality to filter down and run one specific test:
 2. press `w`
 3. press `p`
 4. type in `routes/code` and press [Enter]
+
+---
+
+On a new instance of the Koa `Router`, there are various methods that we can call. (You can take a look at the documentation [on https://github.com/ZijianHe/koa-router ] if you'd like to know every possible method that we can call.) But most commonly we are going to deal with the HTTP verbs (specifically: GET, POST, PUT, PATCH, and DELETE).
+
+It's important to know that the `Router` is just another middleware in our Koa application. In Koa, pretty much everything is a middleware. This has 2 immediate implications for us:
+
+1. We need to make sure that we export the `Router` instance, and then import it inside our app [i.e. inside`src/server.js`] and use "these routes".
+
+2. Perhaps more importantly but certainly most confusingly, understanding how the middleware process works inside a Koa application - you can see [on https://github.com/koajs/koa/blob/master/docs/guide.md ] a documentation page which has a really nice graphic, which explains the middleware process. (You can do some really interesting things with Koa's middleware; we're doing perhaps the most basic thing that you can do.)
+
+---
+
+Perhaps the most confusing thing ... when ... [first starting] with Koa is how we are getting the `ctx` and why we don't need to return the `ctx` object from our middleware.
+
+The simplistic way to think about this may be to think that (a) each [middleware] function is inside an array, (b) there's a function above this that contains that array, and (c) every function inside that array is going to be called by this top-level function, which is going to contain this `ctx` object. [Something like this:]
+
+```
+const mySimpleTopLevelMiddlewareFunction = () => {
+  const myContext = { value: 0 };
+
+  const myMiddlewareFunctions = [
+    (myContext) => myContext.value += 1,
+    (myContext) => myContext.value += 2,
+    (myContext) => myContext.value += 3,
+  ];
+
+  myMiddlewareFunctions.forEach(mf => mf(myContext));
+
+  console.log(myContext.value);
+}
+
+mySimpleTopLevelMiddlewareFunction();
+```
