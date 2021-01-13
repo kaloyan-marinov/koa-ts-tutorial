@@ -14,7 +14,7 @@ describe("routes/codereviewvideos", () => {
     it(`should allow adding a game to the list - ${game}`, async () => {
       const response = await request(server)
         .post("/codereviewvideos")
-        .send({ game });
+        .send({ name: game });
 
       expect(response.status).toEqual(201);
       expect(response.type).toEqual("application/json");
@@ -25,7 +25,7 @@ describe("routes/codereviewvideos", () => {
   });
 
   it("should keep track of all games added to the list", async () => {
-    const data1 = { game: "Half Life 3" };
+    const data1 = { name: "Half Life 3" };
     const response1 = await request(server)
       .post("/codereviewvideos")
       .send(data1);
@@ -33,10 +33,10 @@ describe("routes/codereviewvideos", () => {
     expect(response1.status).toEqual(201);
     expect(response1.type).toEqual("application/json");
     expect(response1.body).toEqual({
-      games: [data1.game]
+      games: [data1.name]
     });
 
-    const data2 = { game: "Grand Theft Auto" };
+    const data2 = { name: "Grand Theft Auto" };
     const response2 = await request(server)
       .post("/codereviewvideos")
       .send(data2);
@@ -44,14 +44,14 @@ describe("routes/codereviewvideos", () => {
     expect(response2.status).toEqual(201);
     expect(response2.type).toEqual("application/json");
     expect(response2.body).toEqual({
-      games: [data1.game, data2.game]
+      games: [data1.name, data2.name]
     });
   });
 
   it("should return a validation failure if the game data is incorrect", async () => {
     const response = await request(server)
       .post("/codereviewvideos")
-      .send({ game: "" });
+      .send({ name: "" });
 
     expect(response.status).toEqual(400);
     expect(response.type).toEqual("application/json");

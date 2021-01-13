@@ -32,7 +32,7 @@ router.post("/codereviewvideos", async (ctx: Context) => {
 
     ctx.status = 201;
     ctx.body = {
-      games: [ctx.request.body.game]
+      games: [ctx.request.body.name]
     };
   } catch (e) {
     console.error(e);
