@@ -48,7 +48,7 @@ describe("routes/codereviewvideos", () => {
     });
   });
 
-  it.only("should return a validation failure if the game data is incorrect", async () => {
+  it("should return a validation failure if the game data is incorrect", async () => {
     const response = await request(server)
       .post("/codereviewvideos")
       .send({ game: "" });
