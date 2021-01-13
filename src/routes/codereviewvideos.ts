@@ -30,15 +30,16 @@ router.post("/codereviewvideos", async (ctx: Context) => {
     console.log("route storage ---", storage);
 
     // save the new game to storage
+    const rs = storage.redisStorage();
+    const list_name = "my_game_list";
+
+    await rs.add(list_name, addGameRequest.name);
 
     // get all the games we know about
+    const allGames = await rs.get(list_name);
 
     ctx.status = 201;
-    ctx.body = {
-      games:
-        // ctx.request.body.name
-        await storage.redisStorage().get("my_game_list")
-    };
+    ctx.body = { games: allGames };
   } catch (e) {
     console.error(e);
   }
