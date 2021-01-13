@@ -33,17 +33,17 @@ const lrange = promisify(client.lrange).bind(client);
 export const redisStorage: Interfaces.IStorage = {
   get: (list: string) => {
     return lrange(list, 0, -1)
-      .then(val => val)
-      .catch(e => []);
+      .then((val: string[]) => val)
+      .catch((e: Error) => []);
   },
   add: (list: string, name: string) => {
     return rpush(list, name)
-      .then(val => val > 0)
-      .catch(e => false);
+      .then((val: number) => val > 0)
+      .catch((e: Error) => false);
   },
   remove: (list: string, name: string) => {
     return lrem(list, 0, name)
-      .then(val => val > 0)
-      .catch(e => false);
+      .then((val: number) => val > 0)
+      .catch((e: Error) => false);
   }
 };
