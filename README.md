@@ -30,3 +30,7 @@ $ npm run test
 ```
 $ npm run test:watch
 ```
+
+4. If you're new:
+   a) to Jest, there are other videos on the site that have covered Jest in a bit more depth than this - ... take a look around;
+   b) to testing in particular, why not take this as an opportunity to try and get the branch coverage of the `src/config.ts` file up to 100%?
