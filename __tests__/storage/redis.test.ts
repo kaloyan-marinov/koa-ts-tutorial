@@ -36,21 +36,18 @@ describe("storage/redis", () => {
       /* is equivalent to */
       // expect(redisStorage.get(list_name)).resolves.toEqual([]);
     });
-
-    xit("should return all items in a list", async () => {
-      expect(await redisStorage.get(list_name)).toEqual([]);
-      /* is equivalent to */
-      // expect(redisStorage.get(list_name)).resolves.toEqual([]);
-    });
   });
 
-  xdescribe("add", () => {
+  describe("add", () => {
     const list_name = "add_test_list";
+    const name1 = "chris";
 
     it("should allow adding an item to a list", async () => {
-      expect(await redisStorage.add(list_name, "chris")).toBeTruthy();
+      expect(await redisStorage.add(list_name, name1)).toBeTruthy();
 
-      expect(await redisStorage.get(list_name)).toEqual(["chris"]);
+      expect(await redisStorage.get(list_name)).toEqual([name1]);
+
+      await redisStorage.remove(list_name, name1);
     });
   });
 
