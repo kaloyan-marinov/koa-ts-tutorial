@@ -1,5 +1,7 @@
 import server from "../../src/server";
-import request from "supertest";
+// import request from "supertest";
+const request = require("supertest");
+// console.log(request);
 
 /*
 close the server after each test
