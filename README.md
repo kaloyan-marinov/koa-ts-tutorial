@@ -114,3 +114,16 @@ OK
 127.0.0.1:6379> keys *
 (empty list or set)
 ```
+
+# added after tag `video-11`
+
+We're going to take advantage of the fact that we've used an interface for our storage, which means we won't be needing Redis up and running when we're running our unit tests:
+
+1. stop the running Redis container by pressing `Ctrl + C`
+
+2. issue the following commands:
+
+```
+docker ps -a
+docker rm <container-id>
+```
