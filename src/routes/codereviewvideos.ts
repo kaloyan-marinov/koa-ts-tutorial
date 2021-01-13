@@ -35,10 +35,9 @@ router.post("/codereviewvideos", async (ctx: Context) => {
 
     ctx.status = 201;
     ctx.body = {
-      games: [
+      games:
         // ctx.request.body.name
         await storage.redisStorage().get("my_game_list")
-      ]
     };
   } catch (e) {
     console.error(e);
