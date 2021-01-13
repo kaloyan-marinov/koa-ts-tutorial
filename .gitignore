@@ -1,0 +1,12 @@
+# Not every file and folder ... listed in this file will be used in this particular
+# project. This is more of just a generic "catch-all" for every JavaScript project.
+
+.env
+/node_modules/*
+.idea/*
+/backup/*
+*.log
+build/
+tmp/
+temp/
+coverage/*
