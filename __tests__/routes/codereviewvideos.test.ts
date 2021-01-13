@@ -135,7 +135,7 @@ describe("routes/codereviewvideos", () => {
   });
 
   describe("delete", () => {
-    it.only("returns an empty list when the list is empy", async () => {
+    it("returns an empty list when the list is empy", async () => {
       const game = "Overwatch";
 
       const list_of_games: string[] = [game];
@@ -167,6 +167,45 @@ describe("routes/codereviewvideos", () => {
       expect(response.type).toEqual("application/json");
       expect(response.body).toEqual({
         games: []
+      });
+
+      expect(mockGet).toHaveBeenCalled();
+      expect(mockRemove).toHaveBeenCalled();
+      expect(mockAdd).not.toHaveBeenCalled();
+    });
+
+    it.only("returns an updated list when deleting a game", async () => {
+      const game = "Overwatch";
+
+      const list_of_games: string[] = ["GTA 5", game, "Diablo 3"];
+
+      const mockGet = jest.fn((list: string) => Promise.resolve(list_of_games));
+      const mockAdd = jest.fn();
+      const mockRemove = jest.fn((list: string, game: string) => {
+        const index = list_of_games.indexOf(game);
+        if (index === -1) {
+          return false;
+        }
+        list_of_games.splice(index, 1);
+        return true;
+      });
+
+      storage.redisStorage = jest.fn(() => {
+        return {
+          get: mockGet,
+          add: mockAdd,
+          remove: mockRemove
+        };
+      });
+
+      const response = await request(server)
+        .delete("/codereviewvideos")
+        .send({ name: game });
+
+      expect(response.status).toEqual(200);
+      expect(response.type).toEqual("application/json");
+      expect(response.body).toEqual({
+        games: list_of_games.filter(item => item !== game)
       });
 
       expect(mockGet).toHaveBeenCalled();
