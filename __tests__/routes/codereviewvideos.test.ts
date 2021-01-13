@@ -1,6 +1,32 @@
 import { executionAsyncId } from "async_hooks";
 import server from "../../src/server";
+/*
+[The next instruction is] more common in TypeScript land
+rather than "the destructuring route" that you tend to see on "regular JavaScript"
+projects.
+*/
+import * as storage from "../../src/storage/redis";
 const request = require("supertest");
+
+/*
+If you run this test alone, the output from the next instruction demonstrates that
+`storage` is an instance of `redisStorage`
+- in other words, at this stage it isn't a mock.
+
+[Examining the log further, we] can also see that
+our system is trying to directly connect to Redis, which isn't great.
+(
+It's useful to understand why that is:
+if we take a look at our Redis implementation,
+one of the really interesting things about this is that
+we have defined a couple of constants outside the thing that we are "exporting"
+- we've got `redis` and we've also got `client`,
+and what this is going to try and do is actually spin up our connection to Redis;
+it doesn't really matter that we're in a test...
+and this is something we can't have if we're going to mock this.
+)
+*/
+console.log("storage", storage);
 
 afterEach(done => {
   server.close();
@@ -8,7 +34,10 @@ afterEach(done => {
 });
 
 describe("routes/codereviewvideos", () => {
-  const games = ["World of Warships", "Battlefield"];
+  const games = [
+    "World of Warships"
+    // "Battlefield"
+  ];
 
   games.forEach((game: string) => {
     it(`should allow adding a game to the list - ${game}`, async () => {
@@ -24,7 +53,7 @@ describe("routes/codereviewvideos", () => {
     });
   });
 
-  it("should keep track of all games added to the list", async () => {
+  xit("should keep track of all games added to the list", async () => {
     const data1 = { name: "Half Life 3" };
     const response1 = await request(server)
       .post("/codereviewvideos")
@@ -48,7 +77,7 @@ describe("routes/codereviewvideos", () => {
     });
   });
 
-  it("should return a validation failure if the game data is incorrect", async () => {
+  xit("should return a validation failure if the game data is incorrect", async () => {
     const response = await request(server)
       .post("/codereviewvideos")
       .send({ name: "" });

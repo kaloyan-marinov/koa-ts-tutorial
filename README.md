@@ -127,3 +127,11 @@ We're going to take advantage of the fact that we've used an interface for our s
 docker ps -a
 docker rm <container-id>
 ```
+
+---
+
+We're going one level higher here - we're going to mock our storage implementation.
+
+[The idea is to] use Jest's mocks to make sure that, when we have interacted with our storage interface, things have behaved as we expect
+
+So, as long as the implementations - or in this case Redis - correctly implements that interface, then things should behave the same whether we're using Redis or MySQL or some on-disk storage or whatever.
